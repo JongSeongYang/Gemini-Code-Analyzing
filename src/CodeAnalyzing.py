@@ -4,6 +4,8 @@ import google.generativeai as genai
 import aspose.words as aw
 from IPython.display import display
 from IPython.display import Markdown
+import time
+import os
 
 
 print(" >>> Start")
@@ -25,22 +27,32 @@ genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-pro') # 텍스트 전용 모델
 
 while True:
-    try:
-        # file name 입력 받기
-        # input_filename = 'tr_FNCE70OP0008R'
-        input_filename = input(">> TR Name : ")
+    input_type = input(" >> Select Method \n    1. Write TR Name \n    2. Write Code \n >> ")
+    header_txt = ""
+    input_filename = ""
+    if input_type == "1":
+        try:
+            # file name 입력 받기
+            # input_filename = 'tr_FNCE70OP0008R'
+            input_filename = input(" >> TR Name : ")
 
-        # C 파일 읽어 오기
-        filename = input_filename + '.h'
-        f = open(filename, 'rt', encoding='UTF8')
-        lines = f.read()
-        header_txt = ""
+            # C 파일 읽어 오기
+            filename = input_filename + '.h'
+            f = open(filename, 'rt', encoding='UTF8')
+            lines = f.read()
 
-        for line in lines:
-            header_txt += line
-        # print(header_txt)
-    except:
-        print(">> [Error] File Open/Read Fail!!\n")
+
+            for line in lines:
+                header_txt += line
+            # print(header_txt)
+        except:
+            print(" >> [Error] File Open/Read Fail!!\n")
+            continue
+    elif input_type == "2":
+        input_filename = input(" >> TR Name : ")
+        header_txt = input(" >> Source Code : \n")
+    else:
+        print(" >> [Error] Wrong Method!! Select Again!! \n")
         continue
     try:
         # 텍스트 생성
@@ -49,20 +61,28 @@ while True:
         response = model.generate_content(request + header_txt)
         break
     except:
-        print(">> [Error] Fail Get Respoonse!!\n")
+        print(" >> [Error] Fail Get Respoonse!!\n")
         continue
         # 답변 내용 보기
         # print(response.text)
 
+# txt file 저장
+w0 = open(input_filename + '.txt', 'w')
+w0.writelines(response.text)
+w0.close()
+
 to_markdown(response.text)
 
-# 저장
+# md file 저장
 w = open(input_filename + '.md', 'w')
 w.writelines(response.text)
 w.close()
 
-# 마크 다운 저장
+# pdf 저장
 doc = aw.Document(input_filename + ".md")
 doc.save(input_filename + ".pdf")
 
-print(">> Program END \n")
+print("\n >> Output File Path : " + os.path.abspath(input_filename+'txt'))
+print(" >>> Program END \n")
+
+time.sleep(10)
