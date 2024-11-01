@@ -8,6 +8,8 @@ import time
 import os
 
 
+# tr_FNCE70O0008R
+# tr_FNCE70O0001R
 print(" >>> Start")
 
 # 서식이 지정된 Markdown 텍스트를 표시하는 함수
@@ -17,7 +19,7 @@ def to_markdown(text):
 
 
 # 제미나이 API 키 설정
-GOOGLE_API_KEY = 'AIzaSyBM5NNSWJ_f0WkM_aOpdmnjExDxJiA_4yc'
+GOOGLE_API_KEY = 'API_KEY'
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # 모델 종류 리스트
@@ -57,6 +59,7 @@ while True:
     try:
         # 텍스트 생성
         request = "아래 C 코드 Input, Output을 IN/OUT구분, 그리드구분, 필드명, 타입(사이즈), 설명 항목으로 정리해서 한국어 csv로 만들어줘.\n"
+        # request = "아래 C 코드 분석해서  만들어줘.\n"
         # request = "Organize the C code input and output below into IN/OUT division, grid division, field name, type (size), and description items and format them in Korean in csv format.\n"
         response = model.generate_content(request + header_txt)
         break
